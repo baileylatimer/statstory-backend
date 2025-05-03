@@ -1,45 +1,23 @@
-# fly.toml - Configuration for Fly.io deployment
-app = "glorygen-backend"
-primary_region = "sea"  # Seattle
+# fly.toml app configuration file generated for statstory-backend on 2025-05-03T00:51:58Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-[env]
-  PORT = "3000"
-  NODE_ENV = "production"
-  # Firebase and OpenAI actual keys will be set with fly secrets
+app = 'statstory-backend'
+primary_region = 'sjc'
+
+[build]
 
 [http_service]
   internal_port = 3000
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 1
-  processes = ["app"]
+  min_machines_running = 0
+  processes = ['app']
 
-  [http_service.concurrency]
-    type = "connections"
-    hard_limit = 250
-    soft_limit = 200
-
-  [[http_service.checks]]
-    grace_period = "30s"
-    interval = "15s"
-    method = "GET"
-    timeout = "10s"
-    path = "/api/health"
-
-[metrics]
-  port = 9091
-  path = "/metrics"
-
-# Allocate more memory for image processing with OpenAI
-[vm]
-  memory = 1024  # 1GB of RAM
-  cpu_kind = "shared"
+[[vm]]
+  memory = '1024'
+  cpu_kind = 'shared'
   cpus = 1
-
-[deploy]
-  strategy = "bluegreen"
-
-[[statics]]
-  guest_path = "/app/public"
-  url_prefix = "/static"
+  memory_mb = 1024
