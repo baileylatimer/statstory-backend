@@ -1,5 +1,5 @@
 # fly.toml - Configuration for Fly.io deployment
-app = "glorygen-backend"
+app = "statstory-backend"
 primary_region = "sea"  # Seattle
 
 [env]

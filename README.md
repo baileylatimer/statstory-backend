@@ -64,7 +64,7 @@ A Express.js API backend for the StatStory application, providing authentication
    ```bash
    fly launch
    # Choose "N" when asked if you want to use an existing configuration
-   # Enter "glorygen-backend" as the app name
+   # Enter "statstory-backend" as the app name
    # Select "Sea (Seattle, WA (US))" as the region
    # Choose "N" for Postgres DB and Redis
    # Choose "N" for now when asked to deploy now
@@ -125,6 +125,6 @@ After deploying the backend, update the frontend's production environment config
 
 ```
 # In StatStory/.env.production
-API_URL=https://glorygen-backend.fly.dev/api
+API_URL=https://statstory-backend.fly.dev/api
 ENV=production
 ```

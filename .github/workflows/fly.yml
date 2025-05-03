@@ -27,4 +27,4 @@ jobs:
         run: |
           echo "Waiting for deployment to stabilize..."
           sleep 30
-          curl -s -o /dev/null -w "%{http_code}" https://glorygen-backend.fly.dev/api/health | grep 200 && echo "Deployment successful!"
+          curl -s -o /dev/null -w "%{http_code}" https://statstory-backend.fly.dev/api/health | grep 200 && echo "Deployment successful!"
