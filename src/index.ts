@@ -31,6 +31,23 @@ app.use(express.json({ limit: '10mb' })); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Parse URL-encoded bodies
 app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined')); // Logging
 
+// Add request logging middleware for debugging TestFlight issues
+app.use((req, res, next) => {
+  console.log(`[BACKEND] 📩 ${req.method} ${req.originalUrl}`);
+  console.log(`[BACKEND] Headers:`, JSON.stringify(req.headers));
+  console.log(`[BACKEND] Query params:`, req.query);
+  console.log(`[BACKEND] Body size:`, req.body ? JSON.stringify(req.body).length : 0);
+  
+  // Track response
+  const originalSend = res.send;
+  res.send = function(body) {
+    console.log(`[BACKEND] 📤 Response status:`, res.statusCode);
+    return originalSend.call(this, body);
+  };
+  
+  next();
+});
+
 // Routes
 app.get('/', (req: Request, res: Response) => {
   res.json({
