@@ -34,16 +34,46 @@ export const authenticateUser = async (
     const token = authHeader.split('Bearer ')[1];
     
     try {
+      console.log('[AUTH] Verifying token...');
+      console.log('[AUTH] Backend Firebase project ID:', process.env.FIREBASE_PROJECT_ID);
+      
+      // Decode token without verification to get issuer info for debugging
+      const tokenParts = token.split('.');
+      if (tokenParts.length === 3) {
+        try {
+          const tokenPayload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+          console.log('[AUTH] Token claims:', {
+            iss: tokenPayload.iss,
+            aud: tokenPayload.aud,
+            exp: tokenPayload.exp ? new Date(tokenPayload.exp * 1000).toISOString() : 'unknown',
+            user_id: tokenPayload.user_id,
+            email: tokenPayload.email,
+          });
+        } catch (decodeErr) {
+          console.error('[AUTH] Could not decode token for debugging:', decodeErr);
+        }
+      }
+      
       const decodedToken = await auth.verifyIdToken(token);
+      console.log('[AUTH] ✅ Token verified successfully for user:', decodedToken.uid);
+      
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
       };
       next();
-    } catch (error) {
+    } catch (error: any) {
+      console.error('[AUTH] ❌ Token verification failed:', error.message);
+      console.error('[AUTH] Error code:', error.code);
+      console.error('[AUTH] Error details:', error);
+      
       return res.status(401).json({
         success: false,
         error: 'Unauthorized: Invalid token',
+        details: process.env.NODE_ENV === 'development' ? {
+          message: error.message,
+          code: error.code
+        } : undefined
       });
     }
   } catch (error) {
